@@ -1,8 +1,10 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(start_pos_x) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-
+    this.x = start_pos_x*-200;
+    this.y = 60 + Math.round(Math.random()*2)*83;
+    this.speed = 100;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -14,6 +16,7 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x = this.x + this.speed*dt;
 };
 
 // Draw the enemy on the screen, required method for game
@@ -25,10 +28,59 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 
+var Player = function(){
+    this.x = 200;
+    this.y = 320;
+    this.speed_horz = 101;
+    this.speed_vert = 83;
+    this.xmove = 0;
+    this.ymove = 0;
+    this.sprite = 'images/char-boy.png';
+};
+
+Player.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+Player.prototype.handleInput= function(key) {
+    if (key == 'left'){
+        this.xmove = -this.speed_horz;
+        this.ymove = 0;
+    }
+    else if (key == 'right'){
+        this.xmove = this.speed_horz;
+        this.ymove = 0;
+    }
+    else if (key == 'up'){
+        this.ymove = -this.speed_vert;
+        this.xmove = 0;
+    }
+    else if (key == 'down'){
+        this.ymove = this.speed_vert;
+        this.xmove = 0;
+    }
+    else {
+        this.xmove = 0;
+        this.ymove = 0;
+    }
+};
+
+Player.prototype.update = function(){
+    this.x = this.x + this.xmove;
+    this.y = this.y + this.ymove;
+    this.xmove = 0;
+    this.ymove = 0;
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+var allEnemies = [];
+for (i = 0; i < 2000; i++){
+    allEnemies.push(new Enemy(i,49));
+}
+var player = new Player();
+
 
 
 
@@ -43,4 +95,5 @@ document.addEventListener('keyup', function(e) {
     };
 
     player.handleInput(allowedKeys[e.keyCode]);
+
 });
