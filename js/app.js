@@ -33,6 +33,11 @@ var Player = function(){
     this.y = 320;
     this.speed_horz = 101;
     this.speed_vert = 83;
+    this.x_thres_abs = 2;
+    this.y_thres_top = 4;
+    this.y_thres_bot = -1;
+    this.xpos = 0;
+    this.ypos = 0;
     this.xmove = 0;
     this.ymove = 0;
     this.sprite = 'images/char-boy.png';
@@ -44,20 +49,32 @@ Player.prototype.render = function() {
 
 Player.prototype.handleInput= function(key) {
     if (key == 'left'){
-        this.xmove = -this.speed_horz;
-        this.ymove = 0;
+        if(this.xpos<this.x_thres_abs){
+            this.xmove = -this.speed_horz;
+            this.ymove = 0;
+            this.xpos++;
+        }
     }
     else if (key == 'right'){
-        this.xmove = this.speed_horz;
-        this.ymove = 0;
+        if(this.xpos>-this.x_thres_abs){
+            this.xmove = this.speed_horz;
+            this.ymove = 0;
+            this.xpos--;
+        }  
     }
     else if (key == 'up'){
-        this.ymove = -this.speed_vert;
-        this.xmove = 0;
+        if (this.ypos < this.y_thres_top){
+            this.ymove = -this.speed_vert;
+            this.xmove = 0;
+            this.ypos++;
+        }
     }
     else if (key == 'down'){
-        this.ymove = this.speed_vert;
-        this.xmove = 0;
+        if (this.ypos > this.y_thres_bot){
+            this.ymove = this.speed_vert;
+            this.xmove = 0;
+            this.ypos--;
+        }
     }
     else {
         this.xmove = 0;
@@ -65,7 +82,7 @@ Player.prototype.handleInput= function(key) {
     }
 };
 
-Player.prototype.update = function(){
+Player.prototype.update = function(dt){
     this.x = this.x + this.xmove;
     this.y = this.y + this.ymove;
     this.xmove = 0;
